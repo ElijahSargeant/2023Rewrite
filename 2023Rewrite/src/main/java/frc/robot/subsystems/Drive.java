@@ -3,10 +3,16 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +25,10 @@ import swervelib.parser.SwerveParser;
 public class Drive extends SubsystemBase {
 
     static Drive driveInstance;
+    
     SwerveDrive swerveDriveInstance;
+
+    private final Matrix<N3, N1> visionStdDevs;
 
     public SwerveDriveKinematics kinematics;
 
@@ -31,6 +40,11 @@ public class Drive extends SubsystemBase {
             DriverStation.reportError("Swerve not Instantiated!", false);
             e.printStackTrace();
           }
+
+        visionStdDevs = new MatBuilder<N3, N1>(Nat.N3(), Nat.N1()).fill(
+            0.01, 
+            0.01, 
+            Units.degreesToRadians(0.001));
     }
 
     public Pose2d getPose() {
@@ -58,6 +72,10 @@ public class Drive extends SubsystemBase {
 
     public void resetGyro() {
         swerveDriveInstance.zeroGyro();
+    }
+
+    public void addVisionMeasurement(Pose2d visionData, double timestamp) {
+        swerveDriveInstance.addVisionMeasurement(visionData, timestamp, true, visionStdDevs);
     }
 
     public Command xLock() {

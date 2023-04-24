@@ -11,7 +11,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.enums.ScorePositions;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -46,13 +46,13 @@ public class Manipulator extends SubsystemBase {
 
         armNEO             = new CANSparkMax(50, MotorType.kBrushless);
         armNEOFollower     = new CANSparkMax(51, MotorType.kBrushless);
-        slideNEO           = new CANSparkMax(40, MotorType.kBrushless);
+        slideNEO           = new CANSparkMax(30, MotorType.kBrushless);
 
         armThroughBore     = armNEO.getAlternateEncoder(8192);
 
         slidePIDController = slideNEO.getPIDController();
 
-        armZeroLimit       = new DigitalInput(0);
+        armZeroLimit       = new DigitalInput(2);
 
         armFF              = new ArmFeedforward(0.74, 0.25, 3.9);
 
@@ -129,7 +129,7 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Goal Slide Length", slideGoalState.position);
 
         //TODO: Set safety on manip stuff because of auto collisions
-        //setSlideDistance(slideGoalState.position);
+        setSlideDistance(ScorePositions.CARRY_POS.getTranslation().getNorm());//slideGoalState.position);
 
         if(atArmZeroLimit())   {armThroughBore.setPosition(0);}
         

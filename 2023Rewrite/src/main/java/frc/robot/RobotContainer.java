@@ -5,9 +5,11 @@
 package frc.robot;
 
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PathPlannerWrapper;
@@ -15,6 +17,7 @@ import frc.robot.enums.ScorePositions;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PneumaticInterface;
+import frc.robot.subsystems.Vision;
 
 
 public class RobotContainer {
@@ -26,6 +29,7 @@ public class RobotContainer {
   PathPlannerWrapper pathPlannerWrapperGlobalInstance;
   PneumaticInterface pneumaticInterfaceGlobalInstance;
   AutoChooser        autoChooserGlobalInstance;
+  Vision             visionGlobalInstance;
 
 
   public RobotContainer() {
@@ -34,11 +38,16 @@ public class RobotContainer {
     pathPlannerWrapperGlobalInstance = PathPlannerWrapper.getInstance();
     pneumaticInterfaceGlobalInstance = PneumaticInterface.getInstance();
     autoChooserGlobalInstance        = AutoChooser.getInstance();
+    visionGlobalInstance             = Vision.getInstance();
 
     driverController = new CommandXboxController(0);
     auxController    = new CommandXboxController(1);
 
     pathPlannerWrapperGlobalInstance.buildFullAuto();
+
+    DriverStation.silenceJoystickConnectionWarning(true);
+
+    CameraServer.startAutomaticCapture();
     
     setDefaultCommands();
     configureBindings();
