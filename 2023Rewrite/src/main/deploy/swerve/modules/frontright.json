@@ -3,20 +3,20 @@
       "front": 13,
       "left": -13
     },
-    "absoluteEncoderOffset": 0,
+    "absoluteEncoderOffset": 241.8,
     "drive": {
       "type": "sparkmax",
-      "id": 0,
+      "id": 2,
       "canbus": null
     },
     "angle": {
       "type": "sparkmax",
-      "id": 0,
+      "id": 6,
       "canbus": null
     },
     "encoder": {
       "type": "thrifty",
-      "id": 0,
+      "id": 1,
       "canbus": null
     },
     "inverted": {

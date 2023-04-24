@@ -26,7 +26,8 @@ public class RobotContainer {
     try {
       swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve")).createSwerveDrive();
     } catch (IOException e) {
-      DriverStation.reportError("Swerve not Instantiated!", true);
+      DriverStation.reportError("Swerve not Instantiated!", false);
+      e.printStackTrace();
     }
 
     
