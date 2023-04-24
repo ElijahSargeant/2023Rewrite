@@ -49,28 +49,33 @@ public class RobotContainer {
         new Translation2d(-MathUtil.applyDeadband(driverController.getLeftX(), 0.01),
                           -MathUtil.applyDeadband(driverController.getLeftY(), 0.01)),
                           -MathUtil.applyDeadband(driverController.getRightX(), 0.01)
-    )));
+    ), Drive.getInstance()));
   }
 
   private void configureBindings() {
 
     driverController.y().onTrue(Commands.run(
-      () -> Drive.getInstance().resetGyro()));
+      () -> Drive.getInstance().resetGyro(), 
+        Drive.getInstance()));
 
     driverController.rightBumper().whileTrue(Commands.run(
-      () -> PneumaticInterface.getInstance().raiseIntakeArms()));
+      () -> PneumaticInterface.getInstance().raiseIntakeArms(),
+        PneumaticInterface.getInstance()));
     
     driverController.rightBumper().whileFalse(Commands.run(
-      () -> PneumaticInterface.getInstance().lowerIntakeArms()));
+      () -> PneumaticInterface.getInstance().lowerIntakeArms(),
+        PneumaticInterface.getInstance()));
 
     
 
 
     auxController.rightStick().onTrue(Commands.runOnce(
-      () -> PneumaticInterface.getInstance().openClaw()));
+      () -> PneumaticInterface.getInstance().openClaw(),
+        PneumaticInterface.getInstance()));
 
     auxController.povDown().onTrue(Commands.runOnce(
-      () -> PneumaticInterface.getInstance().closeClaw()));
+      () -> PneumaticInterface.getInstance().closeClaw(),
+        PneumaticInterface.getInstance()));
 
     //High
     auxController.rightBumper().onTrue(Commands.runOnce(
@@ -78,14 +83,14 @@ public class RobotContainer {
           new TrapezoidProfile.State(
             ScorePositions.HIGH_GOAL.getTranslation().getAngle().getRadians(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
     
     auxController.b().onTrue(Commands.runOnce(
       () -> Manipulator.getInstance().setSlideGoal(
           new TrapezoidProfile.State(
             ScorePositions.HIGH_GOAL.getTranslation().getNorm(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
 
     //Mid
     auxController.back().onTrue(Commands.runOnce(
@@ -93,14 +98,14 @@ public class RobotContainer {
           new TrapezoidProfile.State(
             ScorePositions.MID_GOAL.getTranslation().getAngle().getRadians(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
 
     auxController.x().onTrue(Commands.runOnce(
       () -> Manipulator.getInstance().setSlideGoal(
           new TrapezoidProfile.State(
             ScorePositions.MID_GOAL.getTranslation().getNorm(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
 
     //Low
     auxController.start().onTrue(Commands.runOnce(
@@ -108,14 +113,14 @@ public class RobotContainer {
           new TrapezoidProfile.State(
             ScorePositions.LOW_GOAL.getTranslation().getAngle().getRadians(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
 
     auxController.y().onTrue(Commands.runOnce(
       () -> Manipulator.getInstance().setSlideGoal(
           new TrapezoidProfile.State(
             ScorePositions.LOW_GOAL.getTranslation().getNorm(), 
             0
-          ))));
+          )), Manipulator.getInstance()));
 
     //Pickup
     auxController.a().onTrue(Commands.runOnce(
@@ -123,12 +128,12 @@ public class RobotContainer {
             new TrapezoidProfile.State(
               ScorePositions.PICKUP_POS.getTranslation().getAngle().getRadians(), 
               0
-            ))).andThen(Commands.runOnce(
+            )), Manipulator.getInstance()).andThen(Commands.runOnce(
               () -> Manipulator.getInstance().setSlideGoal(
                   new TrapezoidProfile.State(
                     ScorePositions.PICKUP_POS.getTranslation().getNorm(), 
                     0
-                  )))));
+                  )), Manipulator.getInstance())));
     
     //Carry
     auxController.povUp().onTrue(Commands.runOnce(
@@ -136,11 +141,11 @@ public class RobotContainer {
           new TrapezoidProfile.State(
             ScorePositions.CARRY_POS.getTranslation().getAngle().getRadians(), 
             0
-          ))).andThen(Commands.runOnce(
+          )), Manipulator.getInstance()).andThen(Commands.runOnce(
             () -> Manipulator.getInstance().setSlideGoal(
                 new TrapezoidProfile.State(
                   ScorePositions.CARRY_POS.getTranslation().getNorm(), 
                   0
-                )))));
+                )), Manipulator.getInstance())));
   }
 }
