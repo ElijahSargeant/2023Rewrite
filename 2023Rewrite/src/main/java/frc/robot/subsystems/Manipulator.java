@@ -61,6 +61,8 @@ public class Manipulator extends SubsystemBase {
                                 new TrapezoidProfile.Constraints(12, 12),
                                 0.02
                             );
+        
+        armController.setTolerance(0.05);
 
         armThroughBore.setPositionConversionFactor(6.28);
         armThroughBore.setVelocityConversionFactor(0.105);
@@ -92,20 +94,8 @@ public class Manipulator extends SubsystemBase {
         slideGoalState = goal;
     }
 
-    public void resetController() {
-        armController.reset(getArmEncoderCounts());
-    }
-
-    public boolean atSlideSetpoint() {
-        return Math.abs(getSlideEncoderCounts() - slideGoalState.position) < 0.02;
-    }
-
     public double getArmEncoderCounts() {
         return armThroughBore.getPosition();
-    }
-
-    public double getArmEncoderVelocity() {
-        return armThroughBore.getVelocity();
     }
 
     public double getSlideEncoderCounts() {
@@ -138,17 +128,14 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Goal Arm Angle", armGoalState.position);
         SmartDashboard.putNumber("Goal Slide Length", slideGoalState.position);
 
+        //TODO: Set safety on manip stuff because of auto collisions
         //setSlideDistance(slideGoalState.position);
 
         if(atArmZeroLimit())   {armThroughBore.setPosition(0);}
-
-        double theta = armController.calculate(getArmEncoderCounts());
-
-        if(theta < -0.1) {theta = -0.1;}
         
         if (armController.atSetpoint() && (getSlideEncoderCounts() >= 10) ) {
             setArmAngle(getSlideEncoderCounts() / 3600);
-        } else {setArmAngle(theta);}
+        } else {setArmAngle(armController.calculate(getArmEncoderCounts()));}
     }
 
     public static Manipulator getInstance() {
