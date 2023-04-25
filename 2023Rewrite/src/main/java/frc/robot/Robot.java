@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousExit() {
-    Drive.getInstance().xLock();
+    Drive.getInstance().xLock().schedule();
   }
 
   @Override

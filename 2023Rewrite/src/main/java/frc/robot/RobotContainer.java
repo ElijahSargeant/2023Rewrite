@@ -26,6 +26,7 @@ public class RobotContainer {
   private final CommandXboxController auxController;
 
   Drive              driveGlobalInstance;
+  Manipulator        manipulatorGlobalInstance;
   PathPlannerWrapper pathPlannerWrapperGlobalInstance;
   PneumaticInterface pneumaticInterfaceGlobalInstance;
   AutoChooser        autoChooserGlobalInstance;
@@ -35,6 +36,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     driveGlobalInstance              = Drive.getInstance();
+    manipulatorGlobalInstance        = Manipulator.getInstance();
     pathPlannerWrapperGlobalInstance = PathPlannerWrapper.getInstance();
     pneumaticInterfaceGlobalInstance = PneumaticInterface.getInstance();
     autoChooserGlobalInstance        = AutoChooser.getInstance();

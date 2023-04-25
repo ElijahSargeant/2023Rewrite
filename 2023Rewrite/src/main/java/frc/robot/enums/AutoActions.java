@@ -14,23 +14,23 @@ public enum AutoActions {
 
     MANIP_TO_PICKUP ("ManipToPickup", Commands.run(() -> 
                         Manipulator.getInstance().setManipGoal(
-                            ScorePositions.PICKUP_POS.getTranslation()))),
+                            ScorePositions.PICKUP_POS))),
 
     MANIP_TO_CARRY  ("ManipToPickup", Commands.run(() ->
                         Manipulator.getInstance().setManipGoal(
-                            ScorePositions.CARRY_POS.getTranslation()))),
+                            ScorePositions.CARRY_POS))),
 
     MANIP_TO_HIGH   ("ManipToPickup", Commands.run(() ->
                         Manipulator.getInstance().setManipGoal(
-                            ScorePositions.HIGH_GOAL.getTranslation()))),
+                            ScorePositions.HIGH_GOAL))),
 
     MANIP_TO_MID    ("ManipToPickup", Commands.run(() ->
                         Manipulator.getInstance().setManipGoal(
-                            ScorePositions.MID_GOAL.getTranslation()))),
+                            ScorePositions.MID_GOAL))),
 
     MANIP_TO_LOW    ("ManipToPickup", Commands.run(() ->
                         Manipulator.getInstance().setManipGoal(
-                            ScorePositions.LOW_GOAL.getTranslation())));
+                            ScorePositions.LOW_GOAL)));
 
     
     private final String  autoActionName;

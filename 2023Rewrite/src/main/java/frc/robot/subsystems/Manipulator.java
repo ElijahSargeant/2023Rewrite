@@ -15,7 +15,6 @@ import frc.robot.enums.ScorePositions;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 
 public class Manipulator extends SubsystemBase {
 
@@ -114,9 +113,13 @@ public class Manipulator extends SubsystemBase {
         return !armZeroLimit.get();
     }
 
-    public void setManipGoal(Translation2d goalTranslation) {
-        setArmGoal(new TrapezoidProfile.State(goalTranslation.getAngle().getRadians(), 0));
-        setSlideGoal(new TrapezoidProfile.State(goalTranslation.getNorm(), 0));
+    public void setManipGoal(ScorePositions scorePosition) {
+
+        double armAngleGoal    = scorePosition.getTranslation().getAngle().getRadians();
+        double slideLengthGoal = scorePosition.getTranslation().getNorm();
+
+        setArmGoal(new TrapezoidProfile.State(armAngleGoal, 0));
+        setSlideGoal(new TrapezoidProfile.State(slideLengthGoal, 0));
     }
 
     
@@ -128,9 +131,14 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Goal Arm Angle", armGoalState.position);
         SmartDashboard.putNumber("Goal Slide Length", slideGoalState.position);
 
-        //TODO: Set safety on manip stuff because of auto collisions
-        setSlideDistance(ScorePositions.CARRY_POS.getTranslation().getNorm());//slideGoalState.position);
 
+        if(armGoalState.position > getArmEncoderCounts()) {
+            setSlideDistance(ScorePositions.CARRY_POS.getTranslation().getNorm());
+        } else {
+            setSlideDistance(slideGoalState.position);
+        }
+
+        //only allow slide to move if arm is in a same position and going up
         if(atArmZeroLimit())   {armThroughBore.setPosition(0);}
         
         if (armController.atSetpoint() && (getSlideEncoderCounts() >= 10) ) {
