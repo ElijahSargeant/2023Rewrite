@@ -1,14 +1,20 @@
-package frc.robot.commands;
+package frc.robot.subsystems;
 
 import java.util.HashMap;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.enums.AutoActions;
-import frc.robot.subsystems.Drive;
 
 public class PathPlannerWrapper {
 
@@ -51,6 +57,37 @@ public class PathPlannerWrapper {
 
     public HashMap<String, Command> getEventMap() {
         return eventMap;
+    }
+
+    public Command driveToPose(Pose2d currentPose, Pose2d desiredPose, double currentVelocity) {
+
+        return new PPSwerveControllerCommand(
+
+            PathPlanner.generatePath(
+                new PathConstraints(3.5, 3.5), 
+                new PathPoint(
+                    currentPose.getTranslation(), 
+                    Rotation2d.fromDegrees(0), 
+                    currentPose.getRotation(), 
+                    currentVelocity
+                ), 
+                new PathPoint(
+                    desiredPose.getTranslation(), 
+                    Rotation2d.fromDegrees(0), 
+                    desiredPose.getRotation()
+                ) 
+            ), 
+            Drive.getInstance()::getPose, 
+            Drive.getInstance().kinematics,
+            // PID constants to correct for translation error (used to create the X and Y PID controllers) 
+            new PIDController(5.0, 0.0, 0.0), 
+            new PIDController(5.0, 0.0, 0.0),
+            // PID constants to correct for rotation error (used to create the rotation controller)
+            new PIDController(0.5, 0.0, 0.0), 
+            Drive.getInstance()::setModuleStates, 
+            true, 
+            Drive.getInstance()
+        );
     }
 
     public static PathPlannerWrapper getInstance() {

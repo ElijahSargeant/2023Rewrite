@@ -23,14 +23,14 @@ import swervelib.math.SwerveModuleState2;
 import swervelib.parser.SwerveParser;
 
 public class Drive extends SubsystemBase {
-
-    static Drive driveInstance;
     
     SwerveDrive swerveDriveInstance;
 
     private final Matrix<N3, N1> visionStdDevs;
 
     public SwerveDriveKinematics kinematics;
+
+    static Drive driveInstance;
 
     public Drive() {
         try {
@@ -80,6 +80,11 @@ public class Drive extends SubsystemBase {
 
     public Command xLock() {
         return Commands.run(() -> swerveDriveInstance.lockPose());
+    }
+
+    public double getLinearVelocity() {
+        return Math.hypot(swerveDriveInstance.getRobotVelocity().vxMetersPerSecond,
+                          swerveDriveInstance.getRobotVelocity().vyMetersPerSecond);
     }
 
     public void periodic() {

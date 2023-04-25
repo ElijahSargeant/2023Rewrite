@@ -12,10 +12,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.PathPlannerWrapper;
 import frc.robot.enums.ScorePositions;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.PathPlannerWrapper;
 import frc.robot.subsystems.PneumaticInterface;
 import frc.robot.subsystems.Vision;
 
@@ -76,6 +76,12 @@ public class RobotContainer {
     driverController.rightBumper().whileFalse(Commands.run(
       () -> PneumaticInterface.getInstance().lowerIntakeArms(),
         PneumaticInterface.getInstance()));
+    
+    driverController.x().onTrue(PathPlannerWrapper.getInstance().driveToPose(
+      Drive.getInstance().getPose(), 
+      TeleopPositionChooser.getInstance().getSelectedPosition().getPose(),
+      Drive.getInstance().getLinearVelocity()
+    ));
 
     
 
