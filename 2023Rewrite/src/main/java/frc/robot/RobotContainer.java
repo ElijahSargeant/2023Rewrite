@@ -219,6 +219,28 @@ public class RobotContainer {
     manipTrigger.onFalse(Commands.runOnce(
       () -> RobotLEDState.SCORING.setIsRunning(false)));
 
+    //Robot connected
+    Trigger DSConnectedTrigger = new Trigger(DriverStation::isDSAttached);
+
+    DSConnectedTrigger.onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.DS_ATTACHED),
+      LEDState.getInstance()));
+    
+    DSConnectedTrigger.onFalse(Commands.runOnce(
+      () -> RobotLEDState.DS_ATTACHED.setIsRunning(false)));
+      
+
+
+    Trigger FMSConnectedTrigger = new Trigger(DriverStation::isFMSAttached);
+
+    FMSConnectedTrigger.onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.FMS_ATTACHED),
+      LEDState.getInstance()));
+    
+    FMSConnectedTrigger.onFalse(Commands.runOnce(
+      () -> RobotLEDState.FMS_ATTACHED.setIsRunning(false)));
+    
+
     //else idling
     LEDState.getInstance().setDefaultCommand(Commands.runOnce(
       () -> LEDState.getInstance().setRobotState(RobotLEDState.IDLE), 
