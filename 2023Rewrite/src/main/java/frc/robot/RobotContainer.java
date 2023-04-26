@@ -179,15 +179,17 @@ public class RobotContainer {
       () -> {
         RobotLEDState.INTAKING.setIsRunning(true);
         LEDState.getInstance().setRobotState(RobotLEDState.INTAKING);
-      },LEDState.getInstance()));
+      }, LEDState.getInstance()));
 
     driverController.rightBumper().onFalse(Commands.runOnce(
       () -> RobotLEDState.INTAKING.setIsRunning(false)));
 
     //if drive to pose pressed, auto driving x button
     driverController.x().onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.AUTO_DRIVING), 
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.AUTO_DRIVING.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.AUTO_DRIVING);
+      }, LEDState.getInstance()));
 
     driverController.x().onFalse(Commands.runOnce(
       () -> RobotLEDState.AUTO_DRIVING.setIsRunning(false)));
@@ -195,16 +197,20 @@ public class RobotContainer {
     //if cone/cube button pressed, cube / cone state 
     //left bumper cone
     auxController.leftBumper().onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CONE), 
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.WANTS_CONE.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CONE);
+      }, LEDState.getInstance()));
 
     auxController.leftBumper().onFalse(Commands.runOnce(
       () -> RobotLEDState.WANTS_CONE.setIsRunning(false)));
     
     //left stick cube
     auxController.leftStick().onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CUBE), 
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.WANTS_CUBE.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CUBE); 
+      }, LEDState.getInstance()));
 
     auxController.leftStick().onFalse(Commands.runOnce(
       () -> RobotLEDState.WANTS_CUBE.setIsRunning(false)));
@@ -213,8 +219,10 @@ public class RobotContainer {
     Trigger manipTrigger = new Trigger(Manipulator.getInstance()::manipAtScoringPosition);
 
     manipTrigger.onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.SCORING),
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.SCORING.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.SCORING);
+      }, LEDState.getInstance()));
     
     manipTrigger.onFalse(Commands.runOnce(
       () -> RobotLEDState.SCORING.setIsRunning(false)));
@@ -223,19 +231,23 @@ public class RobotContainer {
     Trigger DSConnectedTrigger = new Trigger(DriverStation::isDSAttached);
 
     DSConnectedTrigger.onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.DS_ATTACHED),
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.DS_ATTACHED.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.DS_ATTACHED);
+      }, LEDState.getInstance()));
     
     DSConnectedTrigger.onFalse(Commands.runOnce(
       () -> RobotLEDState.DS_ATTACHED.setIsRunning(false)));
-      
+
 
 
     Trigger FMSConnectedTrigger = new Trigger(DriverStation::isFMSAttached);
 
     FMSConnectedTrigger.onTrue(Commands.runOnce(
-      () -> LEDState.getInstance().setRobotState(RobotLEDState.FMS_ATTACHED),
-      LEDState.getInstance()));
+      () -> {
+        RobotLEDState.FMS_ATTACHED.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.FMS_ATTACHED);
+      }, LEDState.getInstance()));
     
     FMSConnectedTrigger.onFalse(Commands.runOnce(
       () -> RobotLEDState.FMS_ATTACHED.setIsRunning(false)));
