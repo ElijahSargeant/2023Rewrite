@@ -12,8 +12,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.enums.RobotLEDState;
 import frc.robot.enums.ScorePositions;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.LEDState;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PathPlannerWrapper;
 import frc.robot.subsystems.PneumaticInterface;
@@ -31,6 +34,7 @@ public class RobotContainer {
   PneumaticInterface pneumaticInterfaceGlobalInstance;
   AutoChooser        autoChooserGlobalInstance;
   Vision             visionGlobalInstance;
+  LEDState           ledStateGlobalInstance;
 
 
   public RobotContainer() {
@@ -41,6 +45,7 @@ public class RobotContainer {
     pneumaticInterfaceGlobalInstance = PneumaticInterface.getInstance();
     autoChooserGlobalInstance        = AutoChooser.getInstance();
     visionGlobalInstance             = Vision.getInstance();
+    ledStateGlobalInstance           = LEDState.getInstance();
 
     driverController = new CommandXboxController(0);
     auxController    = new CommandXboxController(1);
@@ -53,6 +58,7 @@ public class RobotContainer {
     
     setDefaultCommands();
     configureBindings();
+    configureLEDs();
   }
 
   private void setDefaultCommands() {
@@ -70,11 +76,11 @@ public class RobotContainer {
         Drive.getInstance()));
 
     driverController.rightBumper().whileTrue(Commands.run(
-      () -> PneumaticInterface.getInstance().raiseIntakeArms(),
+      () -> PneumaticInterface.getInstance().lowerIntakeArms(),
         PneumaticInterface.getInstance()));
     
     driverController.rightBumper().whileFalse(Commands.run(
-      () -> PneumaticInterface.getInstance().lowerIntakeArms(),
+      () -> PneumaticInterface.getInstance().raiseIntakeArms(),
         PneumaticInterface.getInstance()));
     
     driverController.x().onTrue(PathPlannerWrapper.getInstance().driveToPose(
@@ -164,5 +170,60 @@ public class RobotContainer {
                   ScorePositions.CARRY_POS.getTranslation().getNorm(), 
                   0
                 )), Manipulator.getInstance())));
+  }
+
+  public void configureLEDs() {
+
+    //if intake arms down, set intaking state right bumper
+    driverController.rightBumper().onTrue(Commands.runOnce(
+      () -> {
+        RobotLEDState.INTAKING.setIsRunning(true);
+        LEDState.getInstance().setRobotState(RobotLEDState.INTAKING);
+      },LEDState.getInstance()));
+
+    driverController.rightBumper().onFalse(Commands.runOnce(
+      () -> RobotLEDState.INTAKING.setIsRunning(false)));
+
+    //if drive to pose pressed, auto driving x button
+    driverController.x().onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.AUTO_DRIVING), 
+      LEDState.getInstance()));
+
+    driverController.x().onFalse(Commands.runOnce(
+      () -> RobotLEDState.AUTO_DRIVING.setIsRunning(false)));
+
+    //if cone/cube button pressed, cube / cone state 
+    //left bumper cone
+    auxController.leftBumper().onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CONE), 
+      LEDState.getInstance()));
+
+    auxController.leftBumper().onFalse(Commands.runOnce(
+      () -> RobotLEDState.WANTS_CONE.setIsRunning(false)));
+    
+    //left stick cube
+    auxController.leftStick().onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.WANTS_CUBE), 
+      LEDState.getInstance()));
+
+    auxController.leftStick().onFalse(Commands.runOnce(
+      () -> RobotLEDState.WANTS_CUBE.setIsRunning(false)));
+
+    //if arm and slide at setpoints, scoring state
+    Trigger manipTrigger = new Trigger(Manipulator.getInstance()::manipAtScoringPosition);
+
+    manipTrigger.onTrue(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.SCORING),
+      LEDState.getInstance()));
+    
+    manipTrigger.onFalse(Commands.runOnce(
+      () -> RobotLEDState.SCORING.setIsRunning(false)));
+
+    //else idling
+    LEDState.getInstance().setDefaultCommand(Commands.runOnce(
+      () -> LEDState.getInstance().setRobotState(RobotLEDState.IDLE), 
+      LEDState.getInstance()));
+
+
   }
 }

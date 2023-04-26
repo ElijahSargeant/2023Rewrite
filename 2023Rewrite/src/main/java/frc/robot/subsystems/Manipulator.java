@@ -113,6 +113,12 @@ public class Manipulator extends SubsystemBase {
         return !armZeroLimit.get();
     }
 
+    public boolean manipAtScoringPosition() {
+        return 
+            armController.atSetpoint() && 
+            (Math.abs(getSlideEncoderCounts() - slideGoalState.position) < 1);
+    }
+
     public void setManipGoal(ScorePositions scorePosition) {
 
         double armAngleGoal    = scorePosition.getTranslation().getAngle().getRadians();
